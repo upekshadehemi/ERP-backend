@@ -1,0 +1,30 @@
+import  express  from "express";
+
+import resourceRouter from "./api/resource-router.js";
+import normcatagoryRouter from "./api/normcatagory-router.js";
+import normgroupRouter from "./api/normgroup-router.js";
+import normsRouter from "./api/norms-router.js";
+
+
+
+
+const router = express();
+
+// Basic route
+router.get("/", (req, res) => {
+  res.send("Welcome to the ESM Node.js App with Router!");
+});
+
+// API routes
+router.use("/api/normgroup", normgroupRouter);
+router.use("/api/resources", resourceRouter);
+router.use("/api/normcatagory", normcatagoryRouter);
+router.use("/api/norms", normsRouter);
+
+
+// 404 handler
+router.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+export default router;
