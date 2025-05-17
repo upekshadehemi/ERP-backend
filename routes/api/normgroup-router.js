@@ -15,6 +15,8 @@ let normgroup = [
 normgroupRouter.get("/", async (req, res) => {
 let client;
   try {
+    console.log("helooooooooooooooo");
+
     client = await db_pool.connect();
     const result = await client.query('SELECT * from cerpschema.norm_groups');
     console.log("normgroup:", result.rows[0]);
@@ -46,9 +48,11 @@ let client;
 });
 
 // POST create new user
-normgroupRouter.post("/", async(req, res) => {
+normgroupRouter.post("/add", async(req, res) => {
   let client;
   const { group_name, description } = req.body;
+  console.log("req.body",req.body)
+  
   try {
     client = await db_pool.connect();
     const result = await client.query(
