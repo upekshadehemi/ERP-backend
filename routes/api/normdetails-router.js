@@ -37,7 +37,7 @@ const normdetailsRouter=express.Router();
     }
   });
 
-  // POST create new user
+  // POST create new detail
   normdetailsRouter.post("/add", async(req, res) => {
     let client;
     const {newdetail} = req.body;
