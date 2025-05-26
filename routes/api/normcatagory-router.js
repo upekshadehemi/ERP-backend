@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db_pool } from "../../db-pool.js";
 
-const router = Router();
+const normcatagoryRouter = Router();
 
 // In-memory "database"
 let normcatagory = [
@@ -12,7 +12,7 @@ let normcatagory = [
 
 // GET all users
 
-  router.get("/", async (req, res) => {
+ normcatagoryRouter.get("/", async (req, res) => {
   let client;
     try {
       client = await db_pool.connect();
@@ -32,7 +32,7 @@ let normcatagory = [
 
 
 // GET single user
-router.get("/:aid", async (req, res) => {
+normcatagoryRouter.get("/:aid", async (req, res) => {
 let client;
   try {
     client = await db_pool.connect();
@@ -49,14 +49,16 @@ let client;
 });
 
 // POST create new user
-router.post("/", async(req, res) => {
+normcatagoryRouter.post("/add", async(req, res) => {
   let client;
-  const { category_name, description } = req.body;
+  const { newcategory} = req.body;
+   console.log("req.body",req.body)
+  
   try {
     client = await db_pool.connect();
     const result = await client.query(
       "INSERT INTO cerpschema.norm_categories(category_name, description) VALUES ($1, $2) RETURNING *",
-      [category_name, description]
+      [ newcategory.name, newcategory.description]
     );
     console.log("normcatagory:", result.rows[0]);
     res.json(result.rows);
@@ -71,7 +73,7 @@ router.post("/", async(req, res) => {
 
 
 // PUT update user
-router.put('/:id', async(req, res) => {
+normcatagoryRouter.put('/:id', async(req, res) => {
   let client;
   console.log("req",req.body.category_name)
   const { id } = req.params;
@@ -101,7 +103,7 @@ router.put('/:id', async(req, res) => {
 
 
 // DELETE user
-router.delete("/delete/:id",async (req, res) => {
+normcatagoryRouter.delete("/delete/:id",async (req, res) => {
   let client;
   const { id} = req.params; // Get ID from request parameters
   try {
@@ -125,4 +127,4 @@ router.delete("/delete/:id",async (req, res) => {
     if (client) client.release();
   }
 });
-export default router;
+export default normcatagoryRouter;

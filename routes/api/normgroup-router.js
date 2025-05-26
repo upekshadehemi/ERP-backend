@@ -12,7 +12,7 @@ let normgroup = [
 
 
 // GET all users
-normgroupRouter.get("/", async (req, res) => {
+normgroupRouter.get("/all", async (req, res) => {
 let client;
   try {
     console.log("helooooooooooooooo");
@@ -50,14 +50,14 @@ let client;
 // POST create new user
 normgroupRouter.post("/add", async(req, res) => {
   let client;
-  const { group_name, description } = req.body;
+  const {newBuilding} = req.body;
   console.log("req.body",req.body)
   
   try {
     client = await db_pool.connect();
     const result = await client.query(
       "INSERT INTO cerpschema.norm_groups(group_name, description) VALUES ($1, $2) RETURNING *",
-      [group_name, description]
+      [newBuilding.name, newBuilding.description]
     );
     console.log("normgroup:", result.rows[0]);
     res.json(result.rows);
@@ -119,6 +119,23 @@ normgroupRouter.delete("/delete/:id",async (req, res) => {
     res.json({ message: "Group deleted successfully", deletedGroup: result.rows[0] });
   } catch (err) {
     console.error("Error executing query:", err.stack);
+    res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    if (client) client.release();
+  }
+});
+normgroupRouter.get("/:aid", async (req, res) => {
+  let client;
+  try {
+    client = await db_pool.connect();
+    const result = await client.query(
+      'SELECT * from cerpschema.norm_groups where norm_group_id = $1',
+      [req.params.aid]
+    );
+    console.log("normgroup:", result.rows[0]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error executing query:', err.stack);
     res.status(500).json({ error: "Internal Server Error" });
   } finally {
     if (client) client.release();

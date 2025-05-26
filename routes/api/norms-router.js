@@ -36,16 +36,16 @@ let client;
 });
 
 // POST create new user
-normsRouter.post("/", async(req, res) => {
+normsRouter.post("/add", async(req, res) => {
   let client;
-  const {norm_group_id,norm_category_id, norm_title,description,norm_unit,remark,source} = req.body;
-  console.log("data", req.body)
+  const {newnorms} = req.body;
+   console.log("req.body",req.body)
   try {
     client = await db_pool.connect();
     const result = await client.query(
       `INSERT INTO cerpschema.norms_header_table(norm_group_id,norm_category_id, norm_title,description,norm_unit,remark,source) 
       VALUES ($1, $2,$3,$4,$5,$6,$7) RETURNING *`,
-      [ norm_group_id,norm_category_id,norm_title,description,norm_unit,remark,source]
+      [ newnorms.id,newnorms.categoryid,newnorms.title,newnorms.description,newnorms.unit,newnorms.remark,newnorms.source]
     );
     console.log("norms:", result.rows[0]);
     res.json(result.rows);
