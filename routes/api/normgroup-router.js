@@ -11,7 +11,7 @@ let normgroup = [
 ];
 
 // GET all users
-normgroupRouter.get("/", async (req, res) => {
+normgroupRouter.get("/all", async (req, res) => {
 let client;
   try {
     console.log("helooooooooooooooo");
@@ -122,7 +122,9 @@ normgroupRouter.put("/:id", async (req, res) => {
 // DELETE user
 normgroupRouter.delete("/delete/:id", async (req, res) => {
   let client;
+  
   const { id } = req.params; // Get ID from request parameters
+
   try {
     client = await db_pool.connect();
 
