@@ -3,30 +3,27 @@ import { db_pool } from "../../db-pool.js";
 
 const normgroupRouter = express.Router();
 
-// In-memory "database"
-let normgroup = [
-  { id: 1, name: " Buildings", description: "bulidings" },
-  { id: 2, name: "road", description: "road" },
-  { id: 3, name: "bridge", description: "brige" },
-];
 
 // GET all users
-normgroupRouter.get("/", async (req, res) => {
+normgroupRouter.get("/get-all-data", async (req, res) => {
 let client;
   try {
-    console.log("helooooooooooooooo");
+      client = await db_pool.connect();
+      const result = await client.query(`SELECT 
+         group_name as name,
+          description
+         from cerpschema.norm_groups`);
 
-    client = await db_pool.connect();
-    const result = await client.query("SELECT * from cerpschema.norm_groups");
-    console.log("normgroup:", result.rows[0]);
-    res.json(result.rows);
-  } catch (err) {
-    console.error("Error executing query:", err.stack);
-    res.status(500).json({ error: "Internal Server Error" });
-  } finally {
-    if (client) client.release();
-  }
-});
+      console.log("normgroup:", result.rows);
+      res.status(200).json({success:true , data:result.rows});
+    } catch (err) {
+      console.error('Error executing query:', err.stack);
+      res.status(500).json({ error: "Internal Server Error" });
+    } finally {
+      if (client) client.release();
+   
+    }
+  });
 normgroupRouter.get("/:aid", async (req, res) => {
   let client;
   try {

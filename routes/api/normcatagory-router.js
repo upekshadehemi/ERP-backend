@@ -3,22 +3,23 @@ import { db_pool } from "../../db-pool.js";
 
 const normcatagoryRouter = Router();
 
-// In-memory "database"
-let normcatagory = [
-  { id: 1, name: " Masonry", description: "Masonry" },
-  { id: 2, name: "concrete", description: "concrete" },
-  { id: 3, name: "wall", description: "wall" },
-];
+
 
 // GET all users
 
- normcatagoryRouter.get("/", async (req, res) => {
+ normcatagoryRouter.get("/get-all-data", async (req, res) => {
   let client;
     try {
       client = await db_pool.connect();
-      const result = await client.query('SELECT * from cerpschema.norm_categories');
-      console.log("normcatagory:", result.rows[0]);
-      res.json(result.rows);
+      const result = await client.query(`SELECT 
+        category_name as name,
+          description
+          from cerpschema.norm_categories`);
+         
+     
+
+      console.log("normdetails:", result.rows);
+      res.status(200).json({success:true , data:result.rows});
     } catch (err) {
       console.error('Error executing query:', err.stack);
       res.status(500).json({ error: "Internal Server Error" });
@@ -26,8 +27,6 @@ let normcatagory = [
       if (client) client.release();
    
     }
-   
-    
   });
 
 

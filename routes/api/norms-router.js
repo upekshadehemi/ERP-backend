@@ -3,21 +3,28 @@ import { db_pool } from "../../db-pool.js";
 const normsRouter = express.Router();
 
 // GET all users
-normsRouter.get("/", async (req, res) => {
+normsRouter.get("/get-all-data", async (req, res) => {
 let client;
   try {
-    client = await db_pool.connect();
-    const result = await client.query('SELECT * from cerpschema.norms_header_table');
-    console.log("norms", result.rows[0]);
-    res.json(result.rows);
-  } catch (err) {
-    console.error('Error executing query:', err.stack);
-    res.status(500).json({ error: "Internal Server Error" });
-  } finally {
-    if (client) client.release();
- 
-  }
-});
+      client = await db_pool.connect();
+      const result = await client.query(`SELECT 
+        norm_title as title,
+        description,
+        norm_unit as unit,
+        remark,
+        source
+         from cerpschema.norms_header_table`);
+
+      console.log("norms:", result.rows);
+      res.status(200).json({success:true , data:result.rows});
+    } catch (err) {
+      console.error('Error executing query:', err.stack);
+      res.status(500).json({ error: "Internal Server Error" });
+    } finally {
+      if (client) client.release();
+   
+    }
+  });
 
 normsRouter.get("/:aid", async (req, res) => {
 let client;
@@ -43,9 +50,9 @@ normsRouter.post("/add", async(req, res) => {
   try {
     client = await db_pool.connect();
     const result = await client.query(
-      `INSERT INTO cerpschema.norms_header_table(norm_group_id,norm_category_id, norm_title,description,norm_unit,remark,source) 
-      VALUES ($1, $2,$3,$4,$5,$6,$7) RETURNING *`,
-      [ newnorms.id,newnorms.categoryid,newnorms.title,newnorms.description,newnorms.unit,newnorms.remark,newnorms.source]
+      `INSERT INTO cerpschema.norms_header_table( norm_title,description,norm_unit,remark,source) 
+      VALUES ($1, $2,$3,$4,$5) RETURNING *`,
+      [ newnorms.title,newnorms.description,newnorms.unit,newnorms.remark,newnorms.source]
     );
     console.log("norms:", result.rows[0]);
     res.json(result.rows);
