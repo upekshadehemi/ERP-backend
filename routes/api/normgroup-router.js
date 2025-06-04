@@ -5,7 +5,7 @@ const normgroupRouter = express.Router();
 
 
 // GET all users
-normgroupRouter.get("/get-all-data", async (req, res) => {
+normgroupRouter.get("/", async (req, res) => {
 let client;
   try {
       client = await db_pool.connect();
@@ -119,7 +119,9 @@ normgroupRouter.put("/:id", async (req, res) => {
 // DELETE user
 normgroupRouter.delete("/delete/:id", async (req, res) => {
   let client;
+  
   const { id } = req.params; // Get ID from request parameters
+
   try {
     client = await db_pool.connect();
 
