@@ -5,7 +5,7 @@ const normgroupRouter = express.Router();
 
 
 // GET all users
-normgroupRouter.get("/", async (req, res) => {
+normgroupRouter.get("/get-all-data", async (req, res) => {
 let client;
   try {
       client = await db_pool.connect();
@@ -89,18 +89,18 @@ normgroupRouter.post("/add", async (req, res) => {
 
 
 // PUT update user
-normgroupRouter.put("/:id", async (req, res) => {
+normgroupRouter.put('update/:id', async (req, res) => {
   let client;
   console.log("req", req.body.group_name);
   const { id } = req.params;
-  const { group_name, description } = req.body;
+  const { updatedBuildings } = req.body;
   console.log("id", id);
 
   try {
     client = await db_pool.connect();
     const result = await client.query(
       "UPDATE cerpschema.norm_groups SET group_name = $1, description = $2 WHERE norm_group_id = $3 RETURNING *",
-      [group_name, description, id]
+      [updatedBuildings.groupname, updatedBuildings.description, updatedBuildings.id]
     );
 
     if (result.rows.length === 0) {
